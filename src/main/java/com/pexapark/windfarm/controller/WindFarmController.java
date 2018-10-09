@@ -1,5 +1,8 @@
 package com.pexapark.windfarm.controller;
 
+import com.pexapark.windfarm.common.Constants;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,13 +13,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class WindFarmController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/capacity-factor")
-    public String getCapacityFactor(@RequestParam(value = "startDate", required = false) String startDate,
+    @ApiOperation(value = "Returns capacity factor for any period of time in days",
+            notes = "If any parameter of startDate and endDate is not provided, by default today's date is used.\n" +
+                    "If you want to query data from some certain date until today please provide only startDate parameter.\n" +
+                    "If you want to query data for today - you can ignore parameters.")
+    public String getCapacityFactor(@ApiParam("Start period date in format " + Constants.DEFAULT_FORMAT + ". Current date is used if nothing specified.")
+                                    @RequestParam(value = "startDate", required = false) String startDate,
+                                    @ApiParam("End period date in format " + Constants.DEFAULT_FORMAT + ". Current date is used if nothing specified.")
                                     @RequestParam(value = "endDate", required = false) String endDate) {
         return "";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/produced")
-    public String getEnergyProducedForPeriod(@RequestParam(value = "startDate", required = false) String startDate,
+    @ApiOperation(value = "Returns the amount of electricity produced for defined period of time in days",
+            notes = "If any parameter of startDate and endDate is not provided, by default today's date is used.\n" +
+                    "If you want to query data from some certain date until today please provide only startDate parameter.\n" +
+                    "If you want to query data for today - you can ignore parameters.")
+    public String getEnergyProducedForPeriod(@ApiParam("Start period date in format " + Constants.DEFAULT_FORMAT + ". Current date is used if nothing specified.")
+                                             @RequestParam(value = "startDate", required = false) String startDate,
+                                             @ApiParam("End period date in format " + Constants.DEFAULT_FORMAT + ". Current date is used if nothing specified.")
                                              @RequestParam(value = "endDate", required = false) String endDate) {
         return "";
     }
