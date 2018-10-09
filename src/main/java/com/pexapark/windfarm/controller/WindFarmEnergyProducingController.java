@@ -10,19 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-public class WindFarmController {
-
-    @RequestMapping(method = RequestMethod.GET, value = "/capacity-factor")
-    @ApiOperation(value = "Returns capacity factor for any period of time in days",
-            notes = "If any parameter of startDate and endDate is not provided, by default today's date is used.\n" +
-                    "If you want to query data from some certain date until today please provide only startDate parameter.\n" +
-                    "If you want to query data for today - you can ignore parameters.")
-    public String getCapacityFactor(@ApiParam("Start period date in format " + Constants.DEFAULT_FORMAT + ". Current date is used if nothing specified.")
-                                    @RequestParam(value = "startDate", required = false) String startDate,
-                                    @ApiParam("End period date in format " + Constants.DEFAULT_FORMAT + ". Current date is used if nothing specified.")
-                                    @RequestParam(value = "endDate", required = false) String endDate) {
-        return "";
-    }
+public class WindFarmEnergyProducingController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/produced")
     @ApiOperation(value = "Returns the amount of electricity produced for defined period of time in days",
