@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Objects;
 
+
 @Entity
 public class WindFarm {
 
@@ -20,6 +21,11 @@ public class WindFarm {
     private Long timezone;
 
     public WindFarm() {
+    }
+
+    public WindFarm(Long capacity, Long timezone) {
+        this.capacity = capacity;
+        this.timezone = timezone;
     }
 
     public Long getId() {

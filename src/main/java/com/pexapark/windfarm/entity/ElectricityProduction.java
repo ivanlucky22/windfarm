@@ -1,20 +1,34 @@
 package com.pexapark.windfarm.entity;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
 @Entity
 public class ElectricityProduction {
 
+    @Id @GeneratedValue
+    private Long id;
+    @ManyToOne
     private WindFarm windFarm;
     private ZonedDateTime timestamp;
     private Long electricityProduced;
+
+    public ElectricityProduction() {
+    }
 
     public ElectricityProduction(final WindFarm windFarm, final ZonedDateTime timestamp, final Long electricityProduced) {
         this.windFarm = windFarm;
         this.timestamp = timestamp;
         this.electricityProduced = electricityProduced;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public WindFarm getWindFarm() {

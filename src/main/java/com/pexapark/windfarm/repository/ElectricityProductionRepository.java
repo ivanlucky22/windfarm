@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface ElectricityProductionRepository extends JpaRepository<ElectricityProduction, Long> {
 
-    List<ElectricityProduction> findAllByStartDateLessThanEqualAndEndDateGreaterThanEqual(ZonedDateTime endDate, ZonedDateTime startDate);
+    List<ElectricityProduction> findAllByTimestampLessThanEqualAndTimestampGreaterThanEqual(ZonedDateTime endDate, ZonedDateTime startDate);
 
 }
