@@ -1,12 +1,13 @@
 package com.pexapark.windfarm.controller;
 
 import com.pexapark.windfarm.common.Constants;
-import com.pexapark.windfarm.service.WindFarmCapacityFactorService;
+import com.pexapark.windfarm.service.WindFarmService;
+import com.pexapark.windfarm.util.DatesUtil;
 import com.pexapark.windfarm.vo.CapacityFactorVO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.NumberUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,10 +19,11 @@ import java.util.List;
 @RequestMapping("/api")
 public class WindFarmCapacityFactorController {
 
-    private WindFarmCapacityFactorService windFarmCapacityFactorService;
+    private final WindFarmService windFarmService;
 
-    public WindFarmCapacityFactorController(@Autowired WindFarmCapacityFactorService windFarmCapacityFactorService) {
-        this.windFarmCapacityFactorService = windFarmCapacityFactorService;
+    @Autowired
+    public WindFarmCapacityFactorController(final WindFarmService windFarmService) {
+        this.windFarmService = windFarmService;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/capacity-factor")
@@ -34,9 +36,12 @@ public class WindFarmCapacityFactorController {
                                                     @ApiParam("End period date in format " + Constants.DEFAULT_DATE_FORMAT_TEMPLATE + ". Current date is used if nothing specified.")
                                                     @RequestParam(value = "endDate", required = false) String endDate) {
 
+        return windFarmService.findCapacityFactorForRange(getDateId(startDate), getDateId(endDate));
 
-        return windFarmCapacityFactorService.findCapacityFactorForRange(NumberUtils.parseNumber(startDate, Integer.class), NumberUtils.parseNumber(endDate, Integer.class));
+    }
 
+    private int getDateId(final String date) {
+        return NumberUtils.toInt(date, DatesUtil.getTodaysDateId());
     }
 
 }

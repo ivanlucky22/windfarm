@@ -5,6 +5,7 @@ import com.pexapark.windfarm.entity.ElectricityProduction;
 import com.pexapark.windfarm.entity.WindFarm;
 import com.pexapark.windfarm.repository.ElectricityProductionRepository;
 import com.pexapark.windfarm.repository.WindowFarmRepository;
+import com.pexapark.windfarm.util.DatesUtil;
 import com.pexapark.windfarm.vo.CapacityFactorVO;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -15,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,21 +38,19 @@ public class WindFarmCapacityFactorControllerTest {
         final WindFarm savedFarm = windowFarmRepository.save(farm);
         final Optional<WindFarm> one = windowFarmRepository.findOne(Example.of(farm));
 
-//        int hours = getHours(savedFarm, 1);
-//        int hours1 = getHours(savedFarm, 1);
-//        int hours2 = getHours(savedFarm, 2);
-//        int hours3 = getHours(savedFarm, 1);
         one.ifPresent(windFarm -> {
-            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181028, 2000, new BigDecimal(5)));
-            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181028, 4000, new BigDecimal(6)));
-            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181029, 2000, new BigDecimal(7)));
-            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181029, 2000, new BigDecimal(8)));
+            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181028, getHours(0), new BigDecimal(5)));
+            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181028, getHours(1), new BigDecimal(6)));
+            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181029, getHours(0), new BigDecimal(7)));
+            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181029, getHours(1), new BigDecimal(8)));
+
+            electricityProductionRepository.save(new ElectricityProduction(savedFarm, DatesUtil.getTodaysDateId(), getHours(1), new BigDecimal(10)));
         });
     }
 
-    private int getHours(final WindFarm savedFarm, final int hours) {
+    private int getHours(final int hours) {
         LocalDateTime midnight = LocalDate.of(1970, Month.JANUARY, 1).atStartOfDay();
-        long seconds = midnight.plusHours(hours).toEpochSecond(ZoneOffset.of(savedFarm.getTimezone()));
+        long seconds = midnight.plusHours(hours).toEpochSecond(ZoneOffset.UTC);
         return (int) seconds;
     }
 
@@ -61,7 +61,7 @@ public class WindFarmCapacityFactorControllerTest {
     }
 
     @Test
-    public void testCapacityFactorWithStartAndEnd() {
+    public void testCapacityFactorWithRangeShouldSucceed() {
         final List<CapacityFactorVO> actual = windFarmCapacityFactorController.getCapacityFactor("20181028", "20181029");
         final ArrayList<CapacityFactorVO> expected = Lists.newArrayList(
                 new CapacityFactorVO(20181028, new BigDecimal(11)),
@@ -70,4 +70,27 @@ public class WindFarmCapacityFactorControllerTest {
         Assert.assertEquals(expected, actual);
     }
 
+    @Test
+    public void testCapacityFactorForSingleDayShouldSucceed() {
+        final List<CapacityFactorVO> actual = windFarmCapacityFactorController.getCapacityFactor("20181028", "20181028");
+        final ArrayList<CapacityFactorVO> expected = Lists.newArrayList(
+                new CapacityFactorVO(20181028, new BigDecimal(11)));
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testCapacityFactorForDayWithoutDataShouldReturnEmptyList() {
+        final List<CapacityFactorVO> actual = windFarmCapacityFactorController.getCapacityFactor("20111111", "20111111");
+        Assert.assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    public void testCapacityFactorWithoutParametersShouldReturnProductionForToday() {
+        final List<CapacityFactorVO> actual = windFarmCapacityFactorController.getCapacityFactor(null, null);
+        final ArrayList<CapacityFactorVO> expected = Lists.newArrayList(
+                new CapacityFactorVO(DatesUtil.getTodaysDateId(), new BigDecimal(10)));
+
+        Assert.assertEquals(expected, actual);
+    }
 }
