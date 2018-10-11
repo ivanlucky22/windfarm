@@ -1,25 +1,31 @@
 package com.pexapark.windfarm.entity;
 
-import javax.persistence.*;
-import java.time.ZonedDateTime;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
 public class ElectricityProduction {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
     @ManyToOne
     private WindFarm windFarm;
-    private ZonedDateTime timestamp;
-    private Long electricityProduced;
+    private Long date;
+    private Long time;
+    private BigDecimal electricityProduced;
 
     public ElectricityProduction() {
     }
 
-    public ElectricityProduction(final WindFarm windFarm, final ZonedDateTime timestamp, final Long electricityProduced) {
+    public ElectricityProduction(final WindFarm windFarm, final Long date, final Long time, final BigDecimal electricityProduced) {
         this.windFarm = windFarm;
-        this.timestamp = timestamp;
+        this.date = date;
+        this.time = time;
         this.electricityProduced = electricityProduced;
     }
 
@@ -39,20 +45,28 @@ public class ElectricityProduction {
         this.windFarm = windFarm;
     }
 
-    public ZonedDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(final ZonedDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Long getElectricityProduced() {
+    public BigDecimal getElectricityProduced() {
         return electricityProduced;
     }
 
-    public void setElectricityProduced(final Long electricityProduced) {
+    public void setElectricityProduced(final BigDecimal electricityProduced) {
         this.electricityProduced = electricityProduced;
+    }
+
+    public Long getDate() {
+        return date;
+    }
+
+    public void setDate(final Long date) {
+        this.date = date;
+    }
+
+    public Long getTime() {
+        return time;
+    }
+
+    public void setTime(final Long time) {
+        this.time = time;
     }
 
     @Override
@@ -60,14 +74,16 @@ public class ElectricityProduction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final ElectricityProduction that = (ElectricityProduction) o;
-        return Objects.equals(windFarm, that.windFarm) &&
-                Objects.equals(timestamp, that.timestamp) &&
+        return Objects.equals(id, that.id) &&
+                Objects.equals(windFarm, that.windFarm) &&
+                Objects.equals(date, that.date) &&
+                Objects.equals(time, that.time) &&
                 Objects.equals(electricityProduced, that.electricityProduced);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(windFarm, timestamp, electricityProduced);
+        return Objects.hash(id, windFarm, date, time, electricityProduced);
     }
 }

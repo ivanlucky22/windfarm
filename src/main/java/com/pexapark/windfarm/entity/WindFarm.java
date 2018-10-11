@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 
@@ -15,15 +16,15 @@ public class WindFarm {
     private Long id;
 
     @Column(nullable = false)
-    private Long capacity;
+    private BigDecimal capacity;
 
     @Column(nullable = false)
-    private Long timezone;
+    private String timezone;
 
     public WindFarm() {
     }
 
-    public WindFarm(Long capacity, Long timezone) {
+    public WindFarm(BigDecimal capacity, String timezone) {
         this.capacity = capacity;
         this.timezone = timezone;
     }
@@ -36,19 +37,19 @@ public class WindFarm {
         this.id = id;
     }
 
-    public Long getCapacity() {
+    public BigDecimal getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(final Long capacity) {
+    public void setCapacity(final BigDecimal capacity) {
         this.capacity = capacity;
     }
 
-    public Long getTimezone() {
+    public String getTimezone() {
         return timezone;
     }
 
-    public void setTimezone(final Long timezone) {
+    public void setTimezone(final String timezone) {
         this.timezone = timezone;
     }
 

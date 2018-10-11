@@ -4,19 +4,19 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class CapacityFactorVO {
-    private String date;
+    private Long date;
     private BigDecimal capacityFactor;// TODO BigDecimal
 
-    public CapacityFactorVO(String date, BigDecimal capacityFactor) {
+    public CapacityFactorVO(Long date, BigDecimal capacityFactor) {
         this.date = date;
         this.capacityFactor = capacityFactor;
     }
 
-    public String getDate() {
+    public Long getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Long date) {
         this.date = date;
     }
 
