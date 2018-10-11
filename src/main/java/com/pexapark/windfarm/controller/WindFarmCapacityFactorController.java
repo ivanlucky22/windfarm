@@ -1,6 +1,5 @@
 package com.pexapark.windfarm.controller;
 
-import com.google.common.collect.Lists;
 import com.pexapark.windfarm.common.Constants;
 import com.pexapark.windfarm.service.WindFarmCapacityFactorService;
 import com.pexapark.windfarm.vo.CapacityFactorVO;
@@ -13,13 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -42,7 +35,7 @@ public class WindFarmCapacityFactorController {
                                                     @RequestParam(value = "endDate", required = false) String endDate) {
 
 
-        return windFarmCapacityFactorService.findCapacityFactorForRange(NumberUtils.parseNumber(startDate, Long.class), NumberUtils.parseNumber(endDate, Long.class));
+        return windFarmCapacityFactorService.findCapacityFactorForRange(NumberUtils.parseNumber(startDate, Integer.class), NumberUtils.parseNumber(endDate, Integer.class));
 
     }
 

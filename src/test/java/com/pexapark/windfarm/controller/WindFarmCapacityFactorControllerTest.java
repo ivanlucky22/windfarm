@@ -41,10 +41,10 @@ public class WindFarmCapacityFactorControllerTest {
 //        int hours2 = getHours(savedFarm, 2);
 //        int hours3 = getHours(savedFarm, 1);
         one.ifPresent(windFarm -> {
-            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181028L, 2000L, new BigDecimal(5)));
-            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181028L, 4000L, new BigDecimal(6)));
-            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181029L, 2000L, new BigDecimal(7)));
-            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181029L, 2000L, new BigDecimal(8)));
+            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181028, 2000, new BigDecimal(5)));
+            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181028, 4000, new BigDecimal(6)));
+            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181029, 2000, new BigDecimal(7)));
+            electricityProductionRepository.save(new ElectricityProduction(savedFarm, 20181029, 2000, new BigDecimal(8)));
         });
     }
 
@@ -64,8 +64,8 @@ public class WindFarmCapacityFactorControllerTest {
     public void testCapacityFactorWithStartAndEnd() {
         final List<CapacityFactorVO> actual = windFarmCapacityFactorController.getCapacityFactor("20181028", "20181029");
         final ArrayList<CapacityFactorVO> expected = Lists.newArrayList(
-                new CapacityFactorVO(20181028L, new BigDecimal(11)),
-                new CapacityFactorVO(20181029L, new BigDecimal(15)));
+                new CapacityFactorVO(20181028, new BigDecimal(11)),
+                new CapacityFactorVO(20181029, new BigDecimal(15)));
 
         Assert.assertEquals(expected, actual);
     }

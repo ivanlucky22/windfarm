@@ -17,7 +17,7 @@ public class WindFarmCapacityFactorService {
         this.electricityProductionRepository = electricityProductionRepository;
     }
 
-    public List<CapacityFactorVO> findCapacityFactorForRange(final Long startDate, final Long endDate) {
+    public List<CapacityFactorVO> findCapacityFactorForRange(final Integer startDate, final Integer endDate) {
         return electricityProductionRepository.findProducedAggregatedByDate(startDate, endDate);
     }
 

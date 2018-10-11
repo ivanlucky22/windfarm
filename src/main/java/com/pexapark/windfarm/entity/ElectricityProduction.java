@@ -15,14 +15,14 @@ public class ElectricityProduction {
     private Long id;
     @ManyToOne
     private WindFarm windFarm;
-    private Long date;
-    private Long time;
+    private Integer date;
+    private Integer time;
     private BigDecimal electricityProduced;
 
     public ElectricityProduction() {
     }
 
-    public ElectricityProduction(final WindFarm windFarm, final Long date, final Long time, final BigDecimal electricityProduced) {
+    public ElectricityProduction(final WindFarm windFarm, final Integer date, final Integer time, final BigDecimal electricityProduced) {
         this.windFarm = windFarm;
         this.date = date;
         this.time = time;
@@ -53,19 +53,19 @@ public class ElectricityProduction {
         this.electricityProduced = electricityProduced;
     }
 
-    public Long getDate() {
+    public Integer getDate() {
         return date;
     }
 
-    public void setDate(final Long date) {
+    public void setDate(final Integer date) {
         this.date = date;
     }
 
-    public Long getTime() {
+    public Integer getTime() {
         return time;
     }
 
-    public void setTime(final Long time) {
+    public void setTime(final Integer time) {
         this.time = time;
     }
 
