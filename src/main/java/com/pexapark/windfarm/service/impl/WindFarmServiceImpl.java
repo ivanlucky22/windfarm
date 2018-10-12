@@ -8,9 +8,14 @@ import com.pexapark.windfarm.vo.ElectricityProductionAggregatedPerFarmAndDateVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.time.format.DateTimeFormatter.BASIC_ISO_DATE;
 
 @Service
 public class WindFarmServiceImpl implements WindFarmService {
@@ -38,12 +43,23 @@ public class WindFarmServiceImpl implements WindFarmService {
         return producedAggregatedForRange
                 .stream()
                 .map(capacityFactorVO -> {
-                            capacityFactorVO.setValue(capacityFactorVO.getValue().divide(windFarm.getCapacity()));
+                            final BigDecimal val = capacityFactorVO.getFarmId().getCapacity().multiply(new BigDecimal(24));
+                            final ZoneId zoneId = ZoneId.of(capacityFactorVO.getFarmId().getTimezone());
+                            final ZonedDateTime parse = ZonedDateTime.now(zoneId).parse(String.valueOf(capacityFactorVO.getDate()), BASIC_ISO_DATE);
+
+
+                            final boolean daylightSavings = zoneId.getRules().isDaylightSavings(parse.toInstant());
+
+
+                            capacityFactorVO.setValue(capacityFactorVO.getValue().divide(windFarm.getCapacity().multiply(val)));
                             return capacityFactorVO;
                         }
                 ).collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ElectricityProductionAggregatedPerFarmAndDateVO> findElectricityProducedForRange(final Long winFarmId, final Integer startDate, final Integer endDate) {
 
