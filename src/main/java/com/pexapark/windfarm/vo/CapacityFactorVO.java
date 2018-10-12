@@ -4,10 +4,13 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class CapacityFactorVO {
+
+    private Long farmId;
     private Integer date;
     private BigDecimal capacityFactor;// TODO BigDecimal
 
-    public CapacityFactorVO(Integer date, BigDecimal capacityFactor) {
+    public CapacityFactorVO(final Long farmId, Integer date, BigDecimal capacityFactor) {
+        this.farmId = farmId;
         this.date = date;
         this.capacityFactor = capacityFactor;
     }
@@ -26,6 +29,14 @@ public class CapacityFactorVO {
 
     public void setCapacityFactor(BigDecimal capacityFactor) {
         this.capacityFactor = capacityFactor;
+    }
+
+    public Long getFarmId() {
+        return farmId;
+    }
+
+    public void setFarmId(final Long farmId) {
+        this.farmId = farmId;
     }
 
     @Override

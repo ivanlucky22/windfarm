@@ -15,18 +15,20 @@ public interface WindFarmService {
      * divided by the maximum possible amount of electricity that could have been produced
      * if the farm would have run at full capacity.
      *
+     * @param winFarmId a wind farm id
      * @param startDate is the range start date id in format yyyyMMdd
      * @param endDate   is the range end date id in format yyyyMMdd
      * @return the list of {@link CapacityFactorVO} instances that contains date and capacity factor
      */
-    List<CapacityFactorVO> findCapacityFactorForRange(Integer startDate, Integer endDate);
+    List<CapacityFactorVO> findCapacityFactorForRange( final Long winFarmId, Integer startDate, Integer endDate);
 
     /**
      * Calculates the amount of electricity produced per date for given time range
      *
+     * @param winFarmId a wind farm id
      * @param startDate is the range start date id in format yyyyMMdd
      * @param endDate   is the range end date id in format yyyyMMdd
      * @return the list of {@link CapacityFactorVO} instances that contains date and capacity factor
      */
-    List<CapacityFactorVO> findElectricityProducedForRange(Integer startDate, Integer endDate);
+    List<CapacityFactorVO> findElectricityProducedForRange(final Long winFarmId, final Integer startDate, final Integer endDate);
 }

@@ -34,9 +34,11 @@ public class WindFarmCapacityFactorController {
     public List<CapacityFactorVO> getCapacityFactor(@ApiParam("Start period date in format " + Constants.DEFAULT_DATE_FORMAT_TEMPLATE + ". Current date is used if nothing specified.")
                                                     @RequestParam(value = "startDate", required = false) String startDate,
                                                     @ApiParam("End period date in format " + Constants.DEFAULT_DATE_FORMAT_TEMPLATE + ". Current date is used if nothing specified.")
-                                                    @RequestParam(value = "endDate", required = false) String endDate) {
+                                                    @RequestParam(value = "endDate", required = false) String endDate,
+                                                    @ApiParam("Id of the needed wind farm")
+                                                    @RequestParam(value = "winFarmId", required = false) Long winFarmId) {
 
-        return windFarmService.findCapacityFactorForRange(getDateId(startDate), getDateId(endDate));
+        return windFarmService.findCapacityFactorForRange(winFarmId, getDateId(startDate), getDateId(endDate));
 
     }
 

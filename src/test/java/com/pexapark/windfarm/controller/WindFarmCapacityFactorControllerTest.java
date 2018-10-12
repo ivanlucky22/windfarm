@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,34 +61,34 @@ public class WindFarmCapacityFactorControllerTest {
 
     @Test
     public void testCapacityFactorWithRangeShouldSucceed() {
-        final List<CapacityFactorVO> actual = windFarmCapacityFactorController.getCapacityFactor("20181028", "20181029");
+        final List<CapacityFactorVO> actual = windFarmCapacityFactorController.getCapacityFactor("20181028", "20181029", 1L);
         final ArrayList<CapacityFactorVO> expected = Lists.newArrayList(
-                new CapacityFactorVO(20181028, new BigDecimal(11)),
-                new CapacityFactorVO(20181029, new BigDecimal(15)));
+                new CapacityFactorVO(1l, 20181028, new BigDecimal(11)),
+                new CapacityFactorVO(1l, 20181029, new BigDecimal(15)));
 
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void testCapacityFactorForSingleDayShouldSucceed() {
-        final List<CapacityFactorVO> actual = windFarmCapacityFactorController.getCapacityFactor("20181028", "20181028");
+        final List<CapacityFactorVO> actual = windFarmCapacityFactorController.getCapacityFactor("20181028", "20181028", 1L);
         final ArrayList<CapacityFactorVO> expected = Lists.newArrayList(
-                new CapacityFactorVO(20181028, new BigDecimal(11)));
+                new CapacityFactorVO(1l, 20181028, new BigDecimal(11)));
 
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void testCapacityFactorForDayWithoutDataShouldReturnEmptyList() {
-        final List<CapacityFactorVO> actual = windFarmCapacityFactorController.getCapacityFactor("20111111", "20111111");
+        final List<CapacityFactorVO> actual = windFarmCapacityFactorController.getCapacityFactor("20111111", "20111111", 1L);
         Assert.assertTrue(actual.isEmpty());
     }
 
     @Test
     public void testCapacityFactorWithoutParametersShouldReturnProductionForToday() {
-        final List<CapacityFactorVO> actual = windFarmCapacityFactorController.getCapacityFactor(null, null);
+        final List<CapacityFactorVO> actual = windFarmCapacityFactorController.getCapacityFactor(null, null, 1L);
         final ArrayList<CapacityFactorVO> expected = Lists.newArrayList(
-                new CapacityFactorVO(DatesUtil.getTodaysDateId(), new BigDecimal(10)));
+                new CapacityFactorVO(1l, DatesUtil.getTodaysDateId(), new BigDecimal(10)));
 
         Assert.assertEquals(expected, actual);
     }
