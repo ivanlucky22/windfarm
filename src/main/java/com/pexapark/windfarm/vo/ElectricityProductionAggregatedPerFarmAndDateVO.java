@@ -5,6 +5,10 @@ import com.pexapark.windfarm.entity.WindFarm;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+/**
+ * Current value object is used to retrieve result from SQL query with grouping.
+ * Contains slots for farm, date and value where value might be either a sum, average or any relevant value
+ */
 public class ElectricityProductionAggregatedPerFarmAndDateVO {
 
     private WindFarm farmId;

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class WindFarmServiceImpl implements WindFarmService {
 
     private final ElectricityProductionRepository electricityProductionRepository;
-    private WindowFarmRepository windowFarmRepository;
+    private final WindowFarmRepository windowFarmRepository;
 
     @Autowired
     public WindFarmServiceImpl(final ElectricityProductionRepository electricityProductionRepository,
@@ -25,24 +25,29 @@ public class WindFarmServiceImpl implements WindFarmService {
         this.windowFarmRepository = windowFarmRepository;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ElectricityProductionAggregatedPerFarmAndDateVO> findCapacityFactorForRange(final Long winFarmId, final Integer startDate, final Integer endDate) {
-        Optional<WindFarm> farm = windowFarmRepository.findById(winFarmId);
+        final Optional<WindFarm> farm = windowFarmRepository.findById(winFarmId);
         farm.orElseThrow(() -> new IllegalStateException("No Farm found for Id " + winFarmId));
 
-        WindFarm windFarm = farm.get();
-        List<ElectricityProductionAggregatedPerFarmAndDateVO> producedAggregatedForRange = electricityProductionRepository.findProducedAggregatedForRange(windFarm, startDate, endDate);
-        return producedAggregatedForRange.stream().map(capacityFactorVO -> {
-                    capacityFactorVO.setValue(capacityFactorVO.getValue().divide(windFarm.getCapacity()));
-                    return capacityFactorVO;
-                }
-        ).collect(Collectors.toList());
+        final WindFarm windFarm = farm.get();
+        final List<ElectricityProductionAggregatedPerFarmAndDateVO> producedAggregatedForRange = electricityProductionRepository.findProducedAggregatedForRange(windFarm, startDate, endDate);
+        return producedAggregatedForRange
+                .stream()
+                .map(capacityFactorVO -> {
+                            capacityFactorVO.setValue(capacityFactorVO.getValue().divide(windFarm.getCapacity()));
+                            return capacityFactorVO;
+                        }
+                ).collect(Collectors.toList());
     }
 
     @Override
     public List<ElectricityProductionAggregatedPerFarmAndDateVO> findElectricityProducedForRange(final Long winFarmId, final Integer startDate, final Integer endDate) {
 
-        Optional<WindFarm> farm = windowFarmRepository.findById(winFarmId);
+        final Optional<WindFarm> farm = windowFarmRepository.findById(winFarmId);
         farm.orElseThrow(() -> new IllegalStateException("No Farm found for Id " + winFarmId));
 
         return electricityProductionRepository.findProducedAggregatedForRange(farm.get(), startDate, endDate);
