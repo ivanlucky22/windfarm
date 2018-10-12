@@ -4,7 +4,7 @@ import com.pexapark.windfarm.entity.WindFarm;
 import com.pexapark.windfarm.repository.ElectricityProductionRepository;
 import com.pexapark.windfarm.repository.WindowFarmRepository;
 import com.pexapark.windfarm.service.WindFarmService;
-import com.pexapark.windfarm.vo.CapacityFactorVO;
+import com.pexapark.windfarm.vo.ElectricityProductionAggregatedPerFarmAndDateVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,21 +26,21 @@ public class WindFarmServiceImpl implements WindFarmService {
     }
 
     @Override
-    public List<CapacityFactorVO> findCapacityFactorForRange(final Long winFarmId, final Integer startDate, final Integer endDate) {
+    public List<ElectricityProductionAggregatedPerFarmAndDateVO> findCapacityFactorForRange(final Long winFarmId, final Integer startDate, final Integer endDate) {
         Optional<WindFarm> farm = windowFarmRepository.findById(winFarmId);
         farm.orElseThrow(() -> new IllegalStateException("No Farm found for Id " + winFarmId));
 
         WindFarm windFarm = farm.get();
-        List<CapacityFactorVO> producedAggregatedForRange = electricityProductionRepository.findProducedAggregatedForRange(windFarm, startDate, endDate);
+        List<ElectricityProductionAggregatedPerFarmAndDateVO> producedAggregatedForRange = electricityProductionRepository.findProducedAggregatedForRange(windFarm, startDate, endDate);
         return producedAggregatedForRange.stream().map(capacityFactorVO -> {
-                    capacityFactorVO.setCapacityFactor(capacityFactorVO.getCapacityFactor().divide(windFarm.getCapacity()));
+                    capacityFactorVO.setValue(capacityFactorVO.getValue().divide(windFarm.getCapacity()));
                     return capacityFactorVO;
                 }
         ).collect(Collectors.toList());
     }
 
     @Override
-    public List<CapacityFactorVO> findElectricityProducedForRange(final Long winFarmId, final Integer startDate, final Integer endDate) {
+    public List<ElectricityProductionAggregatedPerFarmAndDateVO> findElectricityProducedForRange(final Long winFarmId, final Integer startDate, final Integer endDate) {
 
         Optional<WindFarm> farm = windowFarmRepository.findById(winFarmId);
         farm.orElseThrow(() -> new IllegalStateException("No Farm found for Id " + winFarmId));

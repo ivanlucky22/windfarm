@@ -1,6 +1,6 @@
 package com.pexapark.windfarm.service;
 
-import com.pexapark.windfarm.vo.CapacityFactorVO;
+import com.pexapark.windfarm.vo.ElectricityProductionAggregatedPerFarmAndDateVO;
 
 import java.util.List;
 
@@ -18,9 +18,9 @@ public interface WindFarmService {
      * @param winFarmId a wind farm id
      * @param startDate is the range start date id in format yyyyMMdd
      * @param endDate   is the range end date id in format yyyyMMdd
-     * @return the list of {@link CapacityFactorVO} instances that contains date and capacity factor
+     * @return the list of {@link ElectricityProductionAggregatedPerFarmAndDateVO} instances that contains date and capacity factor
      */
-    List<CapacityFactorVO> findCapacityFactorForRange( final Long winFarmId, Integer startDate, Integer endDate);
+    List<ElectricityProductionAggregatedPerFarmAndDateVO> findCapacityFactorForRange(final Long winFarmId, Integer startDate, Integer endDate);
 
     /**
      * Calculates the amount of electricity produced per date for given time range
@@ -28,7 +28,7 @@ public interface WindFarmService {
      * @param winFarmId a wind farm id
      * @param startDate is the range start date id in format yyyyMMdd
      * @param endDate   is the range end date id in format yyyyMMdd
-     * @return the list of {@link CapacityFactorVO} instances that contains date and capacity factor
+     * @return the list of {@link ElectricityProductionAggregatedPerFarmAndDateVO} instances that contains date and capacity factor
      */
-    List<CapacityFactorVO> findElectricityProducedForRange(final Long winFarmId, final Integer startDate, final Integer endDate);
+    List<ElectricityProductionAggregatedPerFarmAndDateVO> findElectricityProducedForRange(final Long winFarmId, final Integer startDate, final Integer endDate);
 }

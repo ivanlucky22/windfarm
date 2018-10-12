@@ -3,14 +3,17 @@ package com.pexapark.windfarm.vo;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class CapacityFactorVO {
+public class FarmValuePerDateVO {
 
-    private Long farmId;
     private Integer date;
-    private BigDecimal capacityFactor;// TODO BigDecimal
+    private BigDecimal capacityFactor;
 
-    public CapacityFactorVO(final Long farmId, Integer date, BigDecimal capacityFactor) {
-        this.farmId = farmId;
+    public FarmValuePerDateVO(ElectricityProductionAggregatedPerFarmAndDateVO vo) {
+        this.date = vo.getDate();
+        this.capacityFactor = vo.getValue();
+    }
+
+    public FarmValuePerDateVO(Integer date, BigDecimal capacityFactor) {
         this.date = date;
         this.capacityFactor = capacityFactor;
     }
@@ -31,19 +34,11 @@ public class CapacityFactorVO {
         this.capacityFactor = capacityFactor;
     }
 
-    public Long getFarmId() {
-        return farmId;
-    }
-
-    public void setFarmId(final Long farmId) {
-        this.farmId = farmId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CapacityFactorVO that = (CapacityFactorVO) o;
+        FarmValuePerDateVO that = (FarmValuePerDateVO) o;
         return Objects.equals(date, that.date) &&
                 Objects.equals(capacityFactor.doubleValue(), that.capacityFactor.doubleValue());
     }
