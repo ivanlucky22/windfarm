@@ -7,18 +7,18 @@ import java.util.Objects;
 
 /**
  * Current value object is used to retrieve result from SQL query with grouping.
- * Contains slots for farm, date and value where value might be either a sum, average or any relevant value
+ * Contains slots for farm, date and functionValue where functionValue might be either a sum, average or any relevant value
  */
 public class ElectricityProductionAggregatedPerFarmAndDateVO {
 
-    private WindFarm farmId;
+    private WindFarm farm;
     private Integer date;
-    private BigDecimal value;
+    private BigDecimal functionValue;
 
-    public ElectricityProductionAggregatedPerFarmAndDateVO(final WindFarm farmId, Integer date, BigDecimal value) {
-        this.farmId = farmId;
+    public ElectricityProductionAggregatedPerFarmAndDateVO(final WindFarm farm, Integer date, BigDecimal functionValue) {
+        this.farm = farm;
         this.date = date;
-        this.value = value;
+        this.functionValue = functionValue;
     }
 
     public Integer getDate() {
@@ -29,20 +29,20 @@ public class ElectricityProductionAggregatedPerFarmAndDateVO {
         this.date = date;
     }
 
-    public BigDecimal getValue() {
-        return value;
+    public BigDecimal getFunctionValue() {
+        return functionValue;
     }
 
-    public void setValue(BigDecimal value) {
-        this.value = value;
+    public void setFunctionValue(BigDecimal functionValue) {
+        this.functionValue = functionValue;
     }
 
-    public WindFarm getFarmId() {
-        return farmId;
+    public WindFarm getFarm() {
+        return farm;
     }
 
-    public void setFarmId(final WindFarm farmId) {
-        this.farmId = farmId;
+    public void setFarm(final WindFarm farm) {
+        this.farm = farm;
     }
 
     @Override
@@ -50,13 +50,14 @@ public class ElectricityProductionAggregatedPerFarmAndDateVO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ElectricityProductionAggregatedPerFarmAndDateVO that = (ElectricityProductionAggregatedPerFarmAndDateVO) o;
-        return Objects.equals(date, that.date) &&
-                Objects.equals(value.doubleValue(), that.value.doubleValue());
+        return Objects.equals(farm, that.farm) &&
+                Objects.equals(date, that.date) &&
+                Objects.equals(functionValue, that.functionValue);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(date, value);
+        return Objects.hash(farm, date, functionValue);
     }
 }

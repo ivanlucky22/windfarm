@@ -16,5 +16,5 @@ public interface ElectricityProductionRepository extends CrudRepository<Electric
             "from ElectricityProduction as ep " +
             "where ep.windFarm = ?1 and date >= ?2 and date <= ?3 " +
             "group by ep.windFarm, ep.date")
-    List<ElectricityProductionAggregatedPerFarmAndDateVO> findProducedAggregatedForRange(WindFarm windFarm, Integer startDate, Integer endDate);
+    List<ElectricityProductionAggregatedPerFarmAndDateVO> findProducedAggregatedByDay(WindFarm windFarm, Integer startDate, Integer endDate);
 }

@@ -10,7 +10,7 @@ public class FarmValuePerDateVO {
 
     public FarmValuePerDateVO(ElectricityProductionAggregatedPerFarmAndDateVO vo) {
         this.date = vo.getDate();
-        this.capacityFactor = vo.getValue();
+        this.capacityFactor = vo.getFunctionValue();
     }
 
     public FarmValuePerDateVO(Integer date, BigDecimal capacityFactor) {

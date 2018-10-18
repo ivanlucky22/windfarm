@@ -1,9 +1,8 @@
 package com.pexapark.windfarm.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import com.pexapark.windfarm.common.Constants;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -16,16 +15,19 @@ public class WindFarm {
     private Long id;
 
     @Column(nullable = false)
-    private BigDecimal capacity;
+    private BigDecimal hourlyCapacity;
 
     @Column(nullable = false)
     private String timezone;
 
+    @Transient
+    private BigDecimal dailyCapacity;
+
     public WindFarm() {
     }
 
-    public WindFarm(BigDecimal capacity, String timezone) {
-        this.capacity = capacity;
+    public WindFarm(BigDecimal hourlyCapacity, String timezone) {
+        this.hourlyCapacity = hourlyCapacity;
         this.timezone = timezone;
     }
 
@@ -37,12 +39,12 @@ public class WindFarm {
         this.id = id;
     }
 
-    public BigDecimal getCapacity() {
-        return capacity;
+    public BigDecimal getHourlyCapacity() {
+        return hourlyCapacity;
     }
 
-    public void setCapacity(final BigDecimal capacity) {
-        this.capacity = capacity;
+    public void setHourlyCapacity(final BigDecimal hourlyCapacity) {
+        this.hourlyCapacity = hourlyCapacity;
     }
 
     public String getTimezone() {
@@ -59,13 +61,21 @@ public class WindFarm {
         if (o == null || getClass() != o.getClass()) return false;
         final WindFarm windFarm = (WindFarm) o;
         return Objects.equals(id, windFarm.id) &&
-                Objects.equals(capacity, windFarm.capacity) &&
+                Objects.equals(hourlyCapacity, windFarm.hourlyCapacity) &&
                 Objects.equals(timezone, windFarm.timezone);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, capacity, timezone);
+        return Objects.hash(id, hourlyCapacity, timezone);
     }
+
+    public BigDecimal getDailyCapacity() {
+        if (dailyCapacity == null) {
+            dailyCapacity = getHourlyCapacity().multiply(new BigDecimal(Constants.HOURS_IN_DAY));
+        }
+        return dailyCapacity;
+    }
+
 }

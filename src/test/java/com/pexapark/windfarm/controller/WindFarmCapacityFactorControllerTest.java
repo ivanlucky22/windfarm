@@ -47,8 +47,11 @@ public class WindFarmCapacityFactorControllerTest {
         one.ifPresent(windFarm -> {
             electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20180928, getHours(0), new BigDecimal(5)));
             electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20180928, getHours(1), new BigDecimal(6)));
+            electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20180928, getHours(2), null));
             electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20180929, getHours(0), new BigDecimal(7)));
             electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20180929, getHours(1), new BigDecimal(8)));
+            electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20180930, getHours(0), null));
+            electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20181001, getHours(0), new BigDecimal(0)));
 
             electricityProductionRepository.save(new ElectricityProduction(persistedFarm, DatesUtil.getTodaysDateId(), getHours(1), new BigDecimal(1.2)));
         });
@@ -70,17 +73,17 @@ public class WindFarmCapacityFactorControllerTest {
     public void testCapacityFactorWithRangeShouldSucceed() {
         final List<FarmValuePerDateVO> actual = controller.getCapacityFactor(20180928, 20180929, persistedFarm.getId());
         final ArrayList<FarmValuePerDateVO> expected = Lists.newArrayList(
-                new FarmValuePerDateVO(20180928, new BigDecimal(1.1)),
-                new FarmValuePerDateVO(20180929, new BigDecimal(1.5)));
+                new FarmValuePerDateVO(20180928, new BigDecimal(0.046)),
+                new FarmValuePerDateVO(20180929, new BigDecimal(0.062)));
 
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void testCapacityFactorForSingleDayShouldSucceed() {
-        final List<FarmValuePerDateVO> actual = controller.getCapacityFactor(20181028, 20181028, persistedFarm.getId());
+        final List<FarmValuePerDateVO> actual = controller.getCapacityFactor(20180928, 20180928, persistedFarm.getId());
         final ArrayList<FarmValuePerDateVO> expected = Lists.newArrayList(
-                new FarmValuePerDateVO(20181028, new BigDecimal(1.1)));
+                new FarmValuePerDateVO(20180928, new BigDecimal(0.046)));
 
         Assert.assertEquals(expected, actual);
     }
@@ -95,7 +98,25 @@ public class WindFarmCapacityFactorControllerTest {
     public void testCapacityFactorWithoutDateParametersShouldReturnProductionForToday() {
         final List<FarmValuePerDateVO> actual = controller.getCapacityFactor(null, null, persistedFarm.getId());
         final ArrayList<FarmValuePerDateVO> expected = Lists.newArrayList(
-                new FarmValuePerDateVO(DatesUtil.getTodaysDateId(), new BigDecimal(.12)));
+                new FarmValuePerDateVO(DatesUtil.getTodaysDateId(), new BigDecimal(0.005)));
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testCapacityFactorForDayWithNullableProductionShouldReturnResults() {
+        final List<FarmValuePerDateVO> actual = controller.getCapacityFactor(20180930, 20180930, persistedFarm.getId());
+        final ArrayList<FarmValuePerDateVO> expected = Lists.newArrayList(
+                new FarmValuePerDateVO(20180930, null));
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testCapacityFactorForDayWithZeroProduction() {
+        final List<FarmValuePerDateVO> actual = controller.getCapacityFactor(20181001, 20181001, persistedFarm.getId());
+        final ArrayList<FarmValuePerDateVO> expected = Lists.newArrayList(
+                new FarmValuePerDateVO(20181001, new BigDecimal(0)));
 
         Assert.assertEquals(expected, actual);
     }
