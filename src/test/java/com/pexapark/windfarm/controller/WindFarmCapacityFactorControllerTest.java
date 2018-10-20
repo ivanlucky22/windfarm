@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.pexapark.windfarm.entity.ElectricityProduction;
 import com.pexapark.windfarm.entity.WindFarm;
 import com.pexapark.windfarm.repository.ElectricityProductionRepository;
-import com.pexapark.windfarm.repository.WindowFarmRepository;
+import com.pexapark.windfarm.repository.WindFarmRepository;
 import com.pexapark.windfarm.util.DatesUtil;
 import com.pexapark.windfarm.vo.ValuePerDateVO;
 import org.junit.After;
@@ -21,6 +21,8 @@ import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.pexapark.windfarm.util.Utils.getSecondsFromHour;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class WindFarmCapacityFactorControllerTest {
@@ -30,13 +32,13 @@ public class WindFarmCapacityFactorControllerTest {
     @Autowired
     private ElectricityProductionRepository electricityProductionRepository;
     @Autowired
-    private WindowFarmRepository windowFarmRepository;
+    private WindFarmRepository windFarmRepository;
     private WindFarm persistedFarm;
 
     @Before
     public void setUpTest() {
         final WindFarm farm = new WindFarm(new BigDecimal(10), ZoneOffset.systemDefault().getId());
-        persistedFarm = windowFarmRepository.save(farm);
+        persistedFarm = windFarmRepository.save(farm);
     }
 
     @Test
@@ -50,6 +52,30 @@ public class WindFarmCapacityFactorControllerTest {
         final ArrayList<ValuePerDateVO> expected = Lists.newArrayList(
                 new ValuePerDateVO(20180928, new BigDecimal(0.046)),
                 new ValuePerDateVO(20180929, new BigDecimal(0.062)));
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testCapacityFactorWithRangeOnDSTchangeDayShouldSucceed() {
+        electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20181028, getSecondsFromHour(0), new BigDecimal(5)));
+        electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20181028, getSecondsFromHour(1), new BigDecimal(6)));
+
+        final List<ValuePerDateVO> actual = controller.getCapacityFactor(20181028, 20181028, persistedFarm.getId());
+        final ArrayList<ValuePerDateVO> expected = Lists.newArrayList(
+                new ValuePerDateVO(20181028, new BigDecimal(0.044)));
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testCapacityFactorWithRangeOnDST2changeDayShouldSucceed() {
+        electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20180325, getSecondsFromHour(0), new BigDecimal(5)));
+        electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20180325, getSecondsFromHour(1), new BigDecimal(6)));
+
+        final List<ValuePerDateVO> actual = controller.getCapacityFactor(20180325, 20180325, persistedFarm.getId());
+        final ArrayList<ValuePerDateVO> expected = Lists.newArrayList(
+                new ValuePerDateVO(20180325, new BigDecimal(0.048)));
 
         Assert.assertEquals(expected, actual);
     }
@@ -118,23 +144,11 @@ public class WindFarmCapacityFactorControllerTest {
 
         Assert.assertEquals(expected, actual);
     }
-
-    /**
-     * Returns representation of hour in seconds.
-     * Ex 1 am is 3600 seconds
-     *
-     * @param hours time in hours to be converted to seconds
-     * @return
-     */
-    private int getSecondsFromHour(final int hours) {
-        LocalDateTime midnight = LocalDate.of(1970, Month.JANUARY, 1).atStartOfDay();
-        long seconds = midnight.plusHours(hours).toEpochSecond(ZoneOffset.UTC);
-        return (int) seconds;
-    }
+    
 
     @After
     public void tierDownTest() {
         electricityProductionRepository.deleteAll();
-        windowFarmRepository.deleteAll();
+        windFarmRepository.deleteAll();
     }
 }

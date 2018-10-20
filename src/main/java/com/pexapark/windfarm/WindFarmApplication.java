@@ -1,21 +1,15 @@
 package com.pexapark.windfarm;
 
 import com.pexapark.windfarm.config.WindFarmConfiguration;
-import com.pexapark.windfarm.entity.ElectricityProduction;
-import com.pexapark.windfarm.entity.WindFarm;
 import com.pexapark.windfarm.repository.ElectricityProductionRepository;
-import com.pexapark.windfarm.repository.WindowFarmRepository;
-import com.pexapark.windfarm.util.DatesUtil;
+import com.pexapark.windfarm.repository.WindFarmRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Example;
 
-import java.math.BigDecimal;
 import java.time.*;
-import java.util.Optional;
 
 @SpringBootApplication
 @Import({WindFarmConfiguration.class})
@@ -28,7 +22,7 @@ public class WindFarmApplication implements CommandLineRunner {
     @Autowired
     private ElectricityProductionRepository electricityProductionRepository;
     @Autowired
-    private WindowFarmRepository windowFarmRepository;
+    private WindFarmRepository windFarmRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -44,10 +38,5 @@ public class WindFarmApplication implements CommandLineRunner {
 //
 //            electricityProductionRepository.save(new ElectricityProduction(savedFarm, DatesUtil.getTodaysDateId(), getHours(1), new BigDecimal(10)));
 //        });
-    }
-    private int getHours(final int hours) {
-        LocalDateTime midnight = LocalDate.of(1970, Month.JANUARY, 1).atStartOfDay();
-        long seconds = midnight.plusHours(hours).toEpochSecond(ZoneOffset.UTC);
-        return (int) seconds;
     }
 }

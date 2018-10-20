@@ -1,9 +1,11 @@
 package com.pexapark.windfarm.entity;
 
-import com.pexapark.windfarm.common.Constants;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 
@@ -69,13 +71,6 @@ public class WindFarm {
     public int hashCode() {
 
         return Objects.hash(id, hourlyCapacity, timezone);
-    }
-
-    public BigDecimal getDailyCapacity() {
-        if (dailyCapacity == null) {
-            dailyCapacity = getHourlyCapacity().multiply(new BigDecimal(Constants.HOURS_IN_DAY));
-        }
-        return dailyCapacity;
     }
 
 }

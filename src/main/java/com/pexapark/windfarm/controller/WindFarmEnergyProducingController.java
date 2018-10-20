@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,23 +29,45 @@ public class WindFarmEnergyProducingController {
     public WindFarmEnergyProducingController(final WindFarmService windFarmService) {
         this.windFarmService = windFarmService;
     }
-
+//TODO handle when from date > to date
     @RequestMapping(method = RequestMethod.GET, value = "/produced")
-    @ApiOperation(value = "Returns the amount of electricity produced for defined period of time in days",
+    @ApiOperation(value = "Returns the amount of electricity (MW) produced for defined period of time with breakdown per day",
             notes = "If any parameter of startDate and endDate is not provided, by default today's date is used.\n" +
                     "If you want to query data from some certain date until today please provide only startDate parameter.\n" +
                     "If you want to query data for today - you can ignore parameters.")
     public List<ValuePerDateVO> getEnergyProducedForPeriod(@ApiParam("Start period date in format " + Constants.DEFAULT_DATE_FORMAT_TEMPLATE + ". Current date is used if nothing specified.")
-                                             @RequestParam(value = "startDate", required = false) Integer startDate,
+                                                           @RequestParam(value = "startDate", required = false) Integer startDate,
                                                            @ApiParam("End period date in format " + Constants.DEFAULT_DATE_FORMAT_TEMPLATE + ". Current date is used if nothing specified.")
-                                             @RequestParam(value = "endDate", required = false) Integer endDate,
+                                                           @RequestParam(value = "endDate", required = false) Integer endDate,
                                                            @ApiParam("Id of the needed wind farm")
-                                             @RequestParam(value = "winFarmId") Long winFarmId) {
+                                                           @RequestParam(value = "winFarmId") Long winFarmId) {
         final List<ElectricityProductionAggregatedPerFarmAndDateVO> capacityFactorForRange = windFarmService.findElectricityProducedForRange(winFarmId, getDateId(startDate), getDateId(endDate));
         return capacityFactorForRange
                 .stream()
                 .map(ValuePerDateVO::new)
                 .collect(Collectors.toList());
+
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/producedSum")
+    @ApiOperation(value = "Returns the amount of electricity (MW) produced for defined period of time",
+            notes = "If any parameter of startDate and endDate is not provided, by default today's date is used.\n" +
+                    "If you want to query data from some certain date until today please provide only startDate parameter.\n" +
+                    "If you want to query data for today - you can ignore parameters.")
+    public BigDecimal getEnergyProducedSumForPeriod(@ApiParam("Start period date in format " + Constants.DEFAULT_DATE_FORMAT_TEMPLATE + ". Current date is used if nothing specified.")
+                                                    @RequestParam(value = "startDate", required = false) Integer startDate,
+                                                    @ApiParam("End period date in format " + Constants.DEFAULT_DATE_FORMAT_TEMPLATE + ". Current date is used if nothing specified.")
+                                                    @RequestParam(value = "endDate", required = false) Integer endDate,
+                                                    @ApiParam("Id of the needed wind farm")
+                                                    @RequestParam(value = "winFarmId") Long winFarmId) {
+        final List<ElectricityProductionAggregatedPerFarmAndDateVO> capacityFactorForRange = windFarmService.findElectricityProducedForRange(winFarmId, getDateId(startDate), getDateId(endDate));
+        return capacityFactorForRange
+                .stream()
+                .map(ElectricityProductionAggregatedPerFarmAndDateVO::getFunctionValue)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal::add)
+                .orElse(new BigDecimal(0))
+                .stripTrailingZeros();
 
     }
 

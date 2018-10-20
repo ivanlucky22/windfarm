@@ -2,8 +2,9 @@ package com.pexapark.windfarm.service.impl;
 
 import com.pexapark.windfarm.entity.WindFarm;
 import com.pexapark.windfarm.repository.ElectricityProductionRepository;
-import com.pexapark.windfarm.repository.WindowFarmRepository;
+import com.pexapark.windfarm.repository.WindFarmRepository;
 import com.pexapark.windfarm.service.WindFarmService;
+import com.pexapark.windfarm.util.DatesUtil;
 import com.pexapark.windfarm.vo.ElectricityProductionAggregatedPerFarmAndDateVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,13 +19,13 @@ import java.util.stream.Collectors;
 public class WindFarmServiceImpl implements WindFarmService {
 
     private final ElectricityProductionRepository electricityProductionRepository;
-    private final WindowFarmRepository windowFarmRepository;
+    private final WindFarmRepository windFarmRepository;
 
     @Autowired
     public WindFarmServiceImpl(final ElectricityProductionRepository electricityProductionRepository,
-                               final WindowFarmRepository windowFarmRepository) {
+                               final WindFarmRepository windFarmRepository) {
         this.electricityProductionRepository = electricityProductionRepository;
-        this.windowFarmRepository = windowFarmRepository;
+        this.windFarmRepository = windFarmRepository;
     }
 
     /**
@@ -32,7 +33,7 @@ public class WindFarmServiceImpl implements WindFarmService {
      */
     @Override
     public List<ElectricityProductionAggregatedPerFarmAndDateVO> findCapacityFactorForRange(final Long winFarmId, final Integer startDate, final Integer endDate) {
-        final Optional<WindFarm> farm = windowFarmRepository.findById(winFarmId);
+        final Optional<WindFarm> farm = windFarmRepository.findById(winFarmId);
         farm.orElseThrow(() -> new IllegalStateException("No Farm found for Id " + winFarmId));
 
         final WindFarm windFarm = farm.get();
@@ -43,8 +44,9 @@ public class WindFarmServiceImpl implements WindFarmService {
                             // Substitute VO's functionValue (sum) onto calculated capacity factor
                             final BigDecimal functionValue = dateToValueVo.getFunctionValue();
                             if (functionValue != null) {
+                                final BigDecimal hoursInDay = new BigDecimal(DatesUtil.getHoursInDay(dateToValueVo.getDate()));
                                 // Rounding mode has to be decided with BA
-                                final BigDecimal capacityFactor = functionValue.divide(windFarm.getDailyCapacity(), 3, RoundingMode.HALF_EVEN).stripTrailingZeros();
+                                final BigDecimal capacityFactor = functionValue.divide(windFarm.getHourlyCapacity().multiply(hoursInDay), 3, RoundingMode.HALF_EVEN).stripTrailingZeros();
                                 dateToValueVo.setFunctionValue(capacityFactor);
                             }
                         }
@@ -57,7 +59,7 @@ public class WindFarmServiceImpl implements WindFarmService {
     @Override
     public List<ElectricityProductionAggregatedPerFarmAndDateVO> findElectricityProducedForRange(final Long winFarmId, final Integer startDate, final Integer endDate) {
 
-        final Optional<WindFarm> farm = windowFarmRepository.findById(winFarmId);
+        final Optional<WindFarm> farm = windFarmRepository.findById(winFarmId);
         farm.orElseThrow(() -> new IllegalStateException("No Farm found for Id " + winFarmId));
 
         return electricityProductionRepository.findProducedAggregatedByDay(farm.get(), startDate, endDate);
