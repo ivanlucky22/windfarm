@@ -4,7 +4,7 @@ import com.pexapark.windfarm.common.Constants;
 import com.pexapark.windfarm.service.WindFarmService;
 import com.pexapark.windfarm.util.DatesUtil;
 import com.pexapark.windfarm.vo.ElectricityProductionAggregatedPerFarmAndDateVO;
-import com.pexapark.windfarm.vo.FarmValuePerDateVO;
+import com.pexapark.windfarm.vo.ValuePerDateVO;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.ObjectUtils;
@@ -33,16 +33,16 @@ public class WindFarmEnergyProducingController {
             notes = "If any parameter of startDate and endDate is not provided, by default today's date is used.\n" +
                     "If you want to query data from some certain date until today please provide only startDate parameter.\n" +
                     "If you want to query data for today - you can ignore parameters.")
-    public List<FarmValuePerDateVO> getEnergyProducedForPeriod(@ApiParam("Start period date in format " + Constants.DEFAULT_DATE_FORMAT_TEMPLATE + ". Current date is used if nothing specified.")
+    public List<ValuePerDateVO> getEnergyProducedForPeriod(@ApiParam("Start period date in format " + Constants.DEFAULT_DATE_FORMAT_TEMPLATE + ". Current date is used if nothing specified.")
                                              @RequestParam(value = "startDate", required = false) Integer startDate,
-                                             @ApiParam("End period date in format " + Constants.DEFAULT_DATE_FORMAT_TEMPLATE + ". Current date is used if nothing specified.")
+                                                           @ApiParam("End period date in format " + Constants.DEFAULT_DATE_FORMAT_TEMPLATE + ". Current date is used if nothing specified.")
                                              @RequestParam(value = "endDate", required = false) Integer endDate,
-                                             @ApiParam("Id of the needed wind farm")
+                                                           @ApiParam("Id of the needed wind farm")
                                              @RequestParam(value = "winFarmId") Long winFarmId) {
         final List<ElectricityProductionAggregatedPerFarmAndDateVO> capacityFactorForRange = windFarmService.findElectricityProducedForRange(winFarmId, getDateId(startDate), getDateId(endDate));
         return capacityFactorForRange
                 .stream()
-                .map(FarmValuePerDateVO::new)
+                .map(ValuePerDateVO::new)
                 .collect(Collectors.toList());
 
     }

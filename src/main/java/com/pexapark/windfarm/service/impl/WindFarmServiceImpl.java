@@ -40,10 +40,11 @@ public class WindFarmServiceImpl implements WindFarmService {
         return producedAggregatedForRange
                 .stream()
                 .peek(dateToValueVo -> {
-                            // Rounding mode has to be decided with BA
+                            // Substitute VO's functionValue (sum) onto calculated capacity factor
                             final BigDecimal functionValue = dateToValueVo.getFunctionValue();
                             if (functionValue != null) {
-                                final BigDecimal capacityFactor = functionValue.divide(windFarm.getDailyCapacity(), 3, RoundingMode.HALF_EVEN);
+                                // Rounding mode has to be decided with BA
+                                final BigDecimal capacityFactor = functionValue.divide(windFarm.getDailyCapacity(), 3, RoundingMode.HALF_EVEN).stripTrailingZeros();
                                 dateToValueVo.setFunctionValue(capacityFactor);
                             }
                         }
