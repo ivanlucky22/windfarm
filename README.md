@@ -5,6 +5,10 @@ An application that lets customer control daily Capacity factor and daily amount
 Check out API documentation using following link http://localhost:8080/swagger-ui.html#/
 You can easily test API with swagger by clicking "Try it out" button on the above swagger page.
 
+# Data model
+The timestamp column was divided onto 2 columns: dateId and timeId to provide flexibility in grouping by day. Date id is the dateId in format "yyyyMMdd".
+ Time id is just amount of seconds passed from midnight to the certain timeId if it were 01.01.1970.
+
 # Implementation
 The task was to create REST API that will grep (and modify) data from the database aggregated per day.
 The most efficient way to aggregate the data - use native SQL grouping. So for all of the services a grouped data by day within single wind farm were enough.
@@ -30,3 +34,13 @@ No specific Error Handling was provided because the default one is good enough f
   "path": "/api/producedSum"
 }
 ```
+
+# Initial data
+For quick testing some initial data were provided in the following method: com.pexapark.windfarm.WindFarmApplication.run.
+I've decided not to provide SQL scripts to run on startup because of lack of timeId.
+
+# DB
+Connection parameters by default are following:
+URL: jdbc:postgresql://localhost:5432/windFarmDB
+Username=postgres
+Password=postgres

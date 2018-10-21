@@ -6,9 +6,10 @@ import java.util.Objects;
 
 
 @Entity
+@Table(name = "wind_farm", schema="public")
 public class WindFarm {
 
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
     private Long id;
 

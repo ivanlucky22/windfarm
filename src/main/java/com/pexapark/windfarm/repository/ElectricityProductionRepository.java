@@ -12,9 +12,9 @@ import java.util.List;
 @Repository
 public interface ElectricityProductionRepository extends CrudRepository<ElectricityProduction, Long> {
 
-    @Query("select new com.pexapark.windfarm.vo.ElectricityProductionAggregatedPerFarmAndDateVO(ep.windFarm, ep.date, sum(ep.electricityProduced)) " +
+    @Query("select new com.pexapark.windfarm.vo.ElectricityProductionAggregatedPerFarmAndDateVO(ep.windFarm, ep.dateId, sum(ep.electricityProduced)) " +
             "from ElectricityProduction as ep " +
-            "where ep.windFarm = ?1 and date >= ?2 and date <= ?3 " +
-            "group by ep.windFarm, ep.date")
+            "where ep.windFarm = ?1 and date_id >= ?2 and date_id <= ?3 " +
+            "group by ep.windFarm, ep.dateId")
     List<ElectricityProductionAggregatedPerFarmAndDateVO> findProducedAggregatedByDay(WindFarm windFarm, Integer startDate, Integer endDate);
 }

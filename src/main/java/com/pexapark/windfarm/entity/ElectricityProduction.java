@@ -1,31 +1,29 @@
 package com.pexapark.windfarm.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
+@Table(name = "electricity_production", schema = "public")
 public class ElectricityProduction {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @ManyToOne
     private WindFarm windFarm;
-    private Integer date;
-    private Integer time;
+    private Integer dateId;
+    private Integer timeId;
     private BigDecimal electricityProduced;
 
     public ElectricityProduction() {
     }
 
-    public ElectricityProduction(final WindFarm windFarm, final Integer date, final Integer time, final BigDecimal electricityProduced) {
+    public ElectricityProduction(final WindFarm windFarm, final Integer dateId, final Integer timeId, final BigDecimal electricityProduced) {
         this.windFarm = windFarm;
-        this.date = date;
-        this.time = time;
+        this.dateId = dateId;
+        this.timeId = timeId;
         this.electricityProduced = electricityProduced;
     }
 
@@ -53,20 +51,20 @@ public class ElectricityProduction {
         this.electricityProduced = electricityProduced;
     }
 
-    public Integer getDate() {
-        return date;
+    public Integer getDateId() {
+        return dateId;
     }
 
-    public void setDate(final Integer date) {
-        this.date = date;
+    public void setDateId(final Integer dateId) {
+        this.dateId = dateId;
     }
 
-    public Integer getTime() {
-        return time;
+    public Integer getTimeId() {
+        return timeId;
     }
 
-    public void setTime(final Integer time) {
-        this.time = time;
+    public void setTimeId(final Integer timeId) {
+        this.timeId = timeId;
     }
 
     @Override
@@ -76,14 +74,14 @@ public class ElectricityProduction {
         final ElectricityProduction that = (ElectricityProduction) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(windFarm, that.windFarm) &&
-                Objects.equals(date, that.date) &&
-                Objects.equals(time, that.time) &&
+                Objects.equals(dateId, that.dateId) &&
+                Objects.equals(timeId, that.timeId) &&
                 Objects.equals(electricityProduced, that.electricityProduced);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, windFarm, date, time, electricityProduced);
+        return Objects.hash(id, windFarm, dateId, timeId, electricityProduced);
     }
 }
