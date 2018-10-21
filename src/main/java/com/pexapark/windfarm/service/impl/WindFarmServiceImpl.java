@@ -44,8 +44,8 @@ public class WindFarmServiceImpl implements WindFarmService {
                             // Substitute VO's functionValue (sum) onto calculated capacity factor
                             final BigDecimal functionValue = dateToValueVo.getFunctionValue();
                             if (functionValue != null) {
-                                final BigDecimal hoursInDay = new BigDecimal(DatesUtil.getHoursInDay(dateToValueVo.getDate()));
-                                // Rounding mode has to be decided with BA
+                                final BigDecimal hoursInDay = new BigDecimal(DatesUtil.getHoursInDay(dateToValueVo.getDate(), windFarm.getTimezone()));
+                                // Rounding mode is a subject to discuss with BA
                                 final BigDecimal capacityFactor = functionValue.divide(windFarm.getHourlyCapacity().multiply(hoursInDay), 3, RoundingMode.HALF_EVEN).stripTrailingZeros();
                                 dateToValueVo.setFunctionValue(capacityFactor);
                             }

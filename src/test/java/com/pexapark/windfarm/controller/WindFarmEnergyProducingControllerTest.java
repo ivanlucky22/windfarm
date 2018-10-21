@@ -113,4 +113,9 @@ public class WindFarmEnergyProducingControllerTest {
 
         Assert.assertEquals(expected, actual);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCapacityFactorWithWrongPeriodOfTImeShouldThrowException() {
+        controller.getEnergyProducedForPeriod(20181002, 20181001, persistedFarm.getId());
+    }
 }

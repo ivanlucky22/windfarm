@@ -29,7 +29,7 @@ public class WindFarmEnergyProducingController {
     public WindFarmEnergyProducingController(final WindFarmService windFarmService) {
         this.windFarmService = windFarmService;
     }
-//TODO handle when from date > to date
+
     @RequestMapping(method = RequestMethod.GET, value = "/produced")
     @ApiOperation(value = "Returns the amount of electricity (MW) produced for defined period of time with breakdown per day",
             notes = "If any parameter of startDate and endDate is not provided, by default today's date is used.\n" +
@@ -41,7 +41,14 @@ public class WindFarmEnergyProducingController {
                                                            @RequestParam(value = "endDate", required = false) Integer endDate,
                                                            @ApiParam("Id of the needed wind farm")
                                                            @RequestParam(value = "winFarmId") Long winFarmId) {
-        final List<ElectricityProductionAggregatedPerFarmAndDateVO> capacityFactorForRange = windFarmService.findElectricityProducedForRange(winFarmId, getDateId(startDate), getDateId(endDate));
+
+        int startDateId = getDateId(startDate);
+        int endDateId = getDateId(endDate);
+        if (startDateId > endDateId) {
+            throw new IllegalArgumentException(String.format("End date %d has to be later than start date %d or ignored.", endDate, startDate));
+        }
+
+        final List<ElectricityProductionAggregatedPerFarmAndDateVO> capacityFactorForRange = windFarmService.findElectricityProducedForRange(winFarmId, startDateId, endDateId);
         return capacityFactorForRange
                 .stream()
                 .map(ValuePerDateVO::new)
@@ -60,7 +67,14 @@ public class WindFarmEnergyProducingController {
                                                     @RequestParam(value = "endDate", required = false) Integer endDate,
                                                     @ApiParam("Id of the needed wind farm")
                                                     @RequestParam(value = "winFarmId") Long winFarmId) {
-        final List<ElectricityProductionAggregatedPerFarmAndDateVO> capacityFactorForRange = windFarmService.findElectricityProducedForRange(winFarmId, getDateId(startDate), getDateId(endDate));
+
+        int startDateId = getDateId(startDate);
+        int endDateId = getDateId(endDate);
+        if (startDateId > endDateId) {
+            throw new IllegalArgumentException(String.format("End date %d has to be later than start date %d or ignored.", endDate, startDate));
+        }
+
+        final List<ElectricityProductionAggregatedPerFarmAndDateVO> capacityFactorForRange = windFarmService.findElectricityProducedForRange(winFarmId, startDateId, endDateId);
         return capacityFactorForRange
                 .stream()
                 .map(ElectricityProductionAggregatedPerFarmAndDateVO::getFunctionValue)

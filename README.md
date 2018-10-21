@@ -8,13 +8,20 @@ You can easily test API with swagger by clicking "Try it out" button on the abov
 # Implementation
 The task was to create REST API that will grep (and modify) data from the database aggregated per day.
 The most efficient way to aggregate the data - use native SQL grouping. So for all of the services a grouped data by day within single wind farm were enough.
+ To return data from grouped query a new VO com.pexapark.windfarm.vo.ElectricityProductionAggregatedPerFarmAndDateVO was introduced.
 Service for calculating capacity factor requires to have grouped data by day and divide this data onto maximum possible capacity per day.
 Service for calculating actually produced energy needs only to have grouped data by day. 
 `From the task it was not absolutely clear if produced energy calculating also has to be breaked down per days or no,
  so to satisfy both needs and as efforts were extremely small -  2 endpoint were provided: /produced and /producedSum`
 
+# DST
+Handling DST is required only for cases with calculating capacity factor.
+ To find capacity factor for day it is needed to sum up all produced energy for the day and divide onto maximum capacity per day.
+  For regular day maximum capacity is 24(hours) multiplied onto max capacity per hour (10MW), but for days on DST edges amount of hours might be 23 or 25.
 
-No specific Error Handling was provided because the default one is good enough for the test task
+#Error Handling
+No specific Error Handling was provided because the default one is good enough for the test task. Here is an example:
+```
 {
   "timestamp": "2018-10-20T16:07:24.561+0000",
   "status": 400,
@@ -22,3 +29,4 @@ No specific Error Handling was provided because the default one is good enough f
   "message": "Required Long parameter 'winFarmId' is not present",
   "path": "/api/producedSum"
 }
+```

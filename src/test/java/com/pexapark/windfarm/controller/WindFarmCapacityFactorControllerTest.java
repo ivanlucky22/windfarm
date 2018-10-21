@@ -57,37 +57,40 @@ public class WindFarmCapacityFactorControllerTest {
     }
 
     @Test
-    public void testCapacityFactorWithRangeOnDSTchangeDayShouldSucceed() {
-        electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20181028, getSecondsFromHour(0), new BigDecimal(5)));
-        electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20181028, getSecondsFromHour(1), new BigDecimal(6)));
-
-        final List<ValuePerDateVO> actual = controller.getCapacityFactor(20181028, 20181028, persistedFarm.getId());
-        final ArrayList<ValuePerDateVO> expected = Lists.newArrayList(
-                new ValuePerDateVO(20181028, new BigDecimal(0.044)));
-
-        Assert.assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testCapacityFactorWithRangeOnDST2changeDayShouldSucceed() {
-        electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20180325, getSecondsFromHour(0), new BigDecimal(5)));
-        electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20180325, getSecondsFromHour(1), new BigDecimal(6)));
-
-        final List<ValuePerDateVO> actual = controller.getCapacityFactor(20180325, 20180325, persistedFarm.getId());
-        final ArrayList<ValuePerDateVO> expected = Lists.newArrayList(
-                new ValuePerDateVO(20180325, new BigDecimal(0.048)));
-
-        Assert.assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testCapacityFactorForSingleDayShouldSucceed() {
+    public void testCapacityFactorForSingleOrdinalDayShouldSucceed() {
         electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20180928, getSecondsFromHour(0), new BigDecimal(5)));
         electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20180928, getSecondsFromHour(1), new BigDecimal(6)));
 
         final List<ValuePerDateVO> actual = controller.getCapacityFactor(20180928, 20180928, persistedFarm.getId());
         final ArrayList<ValuePerDateVO> expected = Lists.newArrayList(
                 new ValuePerDateVO(20180928, new BigDecimal(0.046)));
+        // 0.046 = (5+6)/(10*24) where 10 is max capacity per hour and 24 hours in this day
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testCapacityFactorFor25houredDayShouldSucceed() {
+        electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20181028, getSecondsFromHour(0), new BigDecimal(5)));
+        electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20181028, getSecondsFromHour(1), new BigDecimal(6)));
+
+        final List<ValuePerDateVO> actual = controller.getCapacityFactor(20181028, 20181028, persistedFarm.getId());
+        final ArrayList<ValuePerDateVO> expected = Lists.newArrayList(
+                new ValuePerDateVO(20181028, new BigDecimal(0.044)));
+        // 0.044 = (5+6)/(10*25) where 10 is max capacity per hour and 25 hours in this day
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testCapacityFactorFor23houredDayShouldSucceed() {
+        electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20180325, getSecondsFromHour(0), new BigDecimal(5)));
+        electricityProductionRepository.save(new ElectricityProduction(persistedFarm, 20180325, getSecondsFromHour(1), new BigDecimal(6)));
+
+        final List<ValuePerDateVO> actual = controller.getCapacityFactor(20180325, 20180325, persistedFarm.getId());
+        final ArrayList<ValuePerDateVO> expected = Lists.newArrayList(
+                new ValuePerDateVO(20180325, new BigDecimal(0.048)));
+        // 0.048 = (5+6)/(10*23) where 10 is max capacity per hour and 23 hours in this day
 
         Assert.assertEquals(expected, actual);
     }
@@ -144,7 +147,11 @@ public class WindFarmCapacityFactorControllerTest {
 
         Assert.assertEquals(expected, actual);
     }
-    
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCapacityFactorWithWrongPeriodOfTImeShouldThrowException() {
+        controller.getCapacityFactor(20181002, 20181001, persistedFarm.getId());
+    }
 
     @After
     public void tierDownTest() {

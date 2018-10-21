@@ -1,6 +1,5 @@
 package com.pexapark.windfarm.util;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -20,21 +19,17 @@ public class DatesUtil {
 
     /**
      * Depending on dateId daily capacity of the farm may differ.
-     * In the day when daylight saving time is starts - a day has 25hours, when ends - 23 hours.
+     * In the day when daylight saving time starts - a day has 23hours, when ends - 25 hours.
      *
      * @param dateId
-     * @param hourlyCapacity
-     * @return
+     * @param timezone
+     * @return hours in day. Might be either 23, 24 or 25
      */
-    public BigDecimal getDailyCapacity(final Integer dateId, final BigDecimal hourlyCapacity) {
-        long hoursInDay = getHoursInDay(dateId);
-        return hourlyCapacity.multiply(new BigDecimal(hoursInDay));
-    }
-
-    public static long getHoursInDay(final Integer dateId) {
-        LocalDate localDate = LocalDate.parse(dateId.toString(), DateTimeFormatter.BASIC_ISO_DATE);
+    public static long getHoursInDay(final Integer dateId, final String timezone) {
+        final LocalDate localDate = LocalDate.parse(dateId.toString(), DateTimeFormatter.BASIC_ISO_DATE);
+        final ZoneId zoneId = ZoneId.of(timezone);
         return ChronoUnit.HOURS.between(
-                localDate.atStartOfDay(ZoneId.systemDefault()),
-                localDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()));
+                localDate.atStartOfDay(zoneId),
+                localDate.plusDays(1).atStartOfDay(zoneId));
     }
 }

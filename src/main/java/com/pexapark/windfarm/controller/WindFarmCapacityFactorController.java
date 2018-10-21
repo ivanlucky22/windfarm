@@ -34,12 +34,18 @@ public class WindFarmCapacityFactorController {
                     "If you want to query data from some certain date until today please provide only startDate parameter.\n" +
                     "If you want to query data for today - you can ignore parameters.")
     public List<ValuePerDateVO> getCapacityFactor(@ApiParam("Start period date in format " + Constants.DEFAULT_DATE_FORMAT_TEMPLATE + ". Current date is used if nothing specified.")
-                                                      @RequestParam(value = "startDate", required = false) Integer startDate,
+                                                  @RequestParam(value = "startDate", required = false) Integer startDate,
                                                   @ApiParam("End period date in format " + Constants.DEFAULT_DATE_FORMAT_TEMPLATE + ". Current date is used if nothing specified.")
-                                                      @RequestParam(value = "endDate", required = false) Integer endDate,
+                                                  @RequestParam(value = "endDate", required = false) Integer endDate,
                                                   @ApiParam("Id of the needed wind farm")
-                                                      @RequestParam(value = "winFarmId") Long winFarmId) {
-        final List<ElectricityProductionAggregatedPerFarmAndDateVO> capacityFactorForRange = windFarmService.findCapacityFactorForRange(winFarmId, getDateId(startDate), getDateId(endDate));
+                                                  @RequestParam(value = "winFarmId") Long winFarmId) {
+
+        int startDateId = getDateId(startDate);
+        int endDateId = getDateId(endDate);
+        if (startDateId > endDateId) {
+            throw new IllegalArgumentException(String.format("End date %d has to be later than start date %d or ignored.", endDate, startDate));
+        }
+        final List<ElectricityProductionAggregatedPerFarmAndDateVO> capacityFactorForRange = windFarmService.findCapacityFactorForRange(winFarmId, startDateId, endDateId);
         return capacityFactorForRange
                 .stream()
                 .map(ValuePerDateVO::new)

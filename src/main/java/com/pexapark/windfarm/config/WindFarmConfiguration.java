@@ -14,8 +14,8 @@ public class WindFarmConfiguration {
     @Bean
     public Docket restApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .select().apis(RequestHandlerSelectors.basePackage("com.pexapark.windfarm.controller"))
-                // TODO maybe path  regex /api required
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.pexapark.windfarm.controller"))
                 .build();
     }
 }
